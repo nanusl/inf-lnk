@@ -20,9 +20,9 @@
 		server-pooled-bytebuf-allocator-enable="true" default-server-worker-processor-threads="10" default-server-executor-threads="8" 
 		use-epoll-native-selector="false">
 		<inf-lnk:application app="biz-pay-bgw-payment-srv" type="jar"/>
-		<inf-lnk:registry type="zk" address="10.100.156.26:2181"/>
-		<!-- <inf-lnk:flow-control type="semaphore" permits="10000000"/> -->
-		<!-- <inf-lnk:track type="logger"/> -->
+		<inf-lnk:registry type="zk" address="127.0.0.1:2181"/>
+		<inf-lnk:flow-control type="semaphore" permits="10000"/>
+		<inf-lnk:track type="logger"/>
 		<inf-lnk:bind>
 			<inf-lnk:service-group service-group="biz-pay-bgw-payment.srv" service-group-worker-processor-threads="30"/>
 			<inf-lnk:service-group service-group="biz-pay-bgw-payment.router.srv" service-group-worker-processor-threads="30"/>
@@ -32,15 +32,15 @@
 	<inf-lnk:client id="paymentClient" client-worker-threads="4" connect-timeout-millis="3000" client-channel-maxidletime-seconds="120"
 		client-socket-sndbuf-size="65535" client-socket-rcvbuf-size="65535" default-client-executor-threads="4">
 		<inf-lnk:application app="biz-pay-bgw-payment-srv" type="jar"/>
-		<inf-lnk:lookup type="zk" address="10.100.156.26:2181"/>
-		<!-- <inf-lnk:flow-control type="semaphore" permits="1000"/> -->
+		<inf-lnk:lookup type="zk" address="127.0.0.1:2181"/>
+		<inf-lnk:flow-control type="semaphore" permits="1000"/>
 		<inf-lnk:load-balance type="hash"/>
 	</inf-lnk:client>
 	
 	<!-- 
 	<inf-lnk:server id="paymentServer" >
 		<inf-lnk:application app="biz-pay-bgw-payment-srv"/>
-		<inf-lnk:registry type="zk" address="10.100.156.26:2181"/>
+		<inf-lnk:registry type="zk" address="127.0.0.1:2181"/>
 		<inf-lnk:flow-control type="semaphore" permits="10000000"/>
 		<inf-lnk:track type="logger"/>
 		<inf-lnk:bind>
@@ -51,7 +51,7 @@
 	
 	<inf-lnk:client>
 		<inf-lnk:application app="biz-pay-bgw-payment-srv"/>
-		<inf-lnk:lookup type="zk" address="10.100.156.26:2181"/>
+		<inf-lnk:lookup type="zk" address="127.0.0.1:2181"/>
 		<inf-lnk:flow-control type="semaphore" permits="1000"/>
 		<inf-lnk:load-balance type="hash"/>
 	</inf-lnk:client>
@@ -60,12 +60,12 @@
 	 <!-- 
 	 <inf-lnk:server id="paymentServer" >
 		<inf-lnk:application app="biz-pay-bgw-payment-srv"/>
-		<inf-lnk:registry type="zk" address="10.100.156.26:2181"/>
+		<inf-lnk:registry type="zk" address="127.0.0.1:2181"/>
 	</inf-lnk:server>
 	
 	<inf-lnk:client>
 		<inf-lnk:application app="biz-pay-bgw-payment-srv"/>
-		<inf-lnk:lookup type="zk" address="10.100.156.26:2181"/>
+		<inf-lnk:lookup type="zk" address="127.0.0.1:2181"/>
 		<inf-lnk:load-balance type="hash"/>
 	</inf-lnk:client>
 	  -->
