@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:inf-cache="http://www.ly.fn.com/schema/inf/inf-cache"
+	xmlns:inf-lnk="http://www.ly.fn.com/schema/inf/lnk" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:lang="http://www.ly.fn.com/schema/command/lang/groovy"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.ly.fn.com/schema/inf/lnk http://www.ly.fn.com/schema/inf/lnk/lnk-1.0.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<context:annotation-config />
+	<aop:aspectj-autoproxy />
+	
+	<bean id="defaultHelloService" class="com.ly.fn.inf.lnk.demo.def.DefaultHelloService"/>
+	<bean id="defaultDemoService" class="com.ly.fn.inf.lnk.demo.def.DefaultDemoService"/>
+	
+	<inf-lnk:server id="paymentServer" listen-port="8888" server-worker-threads="20" server-selector-threads="15" 
+		server-channel-maxidletime-seconds="120" server-socket-sndbuf-size="65535" server-socket-rcvbuf-size="65535" 
+		server-pooled-bytebuf-allocator-enable="true" default-server-worker-processor-threads="10" default-server-executor-threads="8" 
+		use-epoll-native-selector="false">
+		<inf-lnk:application app="biz-pay-bgw-payment-srv" type="jar"/>
+		<inf-lnk:registry type="zk" address="10.100.156.26:2181"/>
+		<!-- <inf-lnk:flow-control type="semaphore" permits="10000000"/> -->
+		<!-- <inf-lnk:track type="logger"/> -->
+		<inf-lnk:bind>
+			<inf-lnk:service-group service-group="biz-pay-bgw-payment.srv" service-group-worker-processor-threads="30"/>
+			<inf-lnk:service-group service-group="biz-pay-bgw-payment.router.srv" service-group-worker-processor-threads="30"/>
+		</inf-lnk:bind>
+	</inf-lnk:server>
+	
+	<inf-lnk:client id="paymentClient" client-worker-threads="4" connect-timeout-millis="3000" client-channel-maxidletime-seconds="120"
+		client-socket-sndbuf-size="65535" client-socket-rcvbuf-size="65535" default-client-executor-threads="4">
+		<inf-lnk:application app="biz-pay-bgw-payment-srv" type="jar"/>
+		<inf-lnk:lookup type="zk" address="10.100.156.26:2181"/>
+		<!-- <inf-lnk:flow-control type="semaphore" permits="1000"/> -->
+		<inf-lnk:load-balance type="hash"/>
+	</inf-lnk:client>
+	
+	<!-- 
+	<inf-lnk:server id="paymentServer" >
+		<inf-lnk:application app="biz-pay-bgw-payment-srv"/>
+		<inf-lnk:registry type="zk" address="10.100.156.26:2181"/>
+		<inf-lnk:flow-control type="semaphore" permits="10000000"/>
+		<inf-lnk:track type="logger"/>
+		<inf-lnk:bind>
+			<inf-lnk:service-group service-group="biz-pay-bgw-payment.srv" service-group-worker-processor-threads="10"/>
+			<inf-lnk:service-group service-group="biz-pay-bgw-payment.router.srv" service-group-worker-processor-threads="10"/>
+		</inf-lnk:bind>
+	</inf-lnk:server>
+	
+	<inf-lnk:client>
+		<inf-lnk:application app="biz-pay-bgw-payment-srv"/>
+		<inf-lnk:lookup type="zk" address="10.100.156.26:2181"/>
+		<inf-lnk:flow-control type="semaphore" permits="1000"/>
+		<inf-lnk:load-balance type="hash"/>
+	</inf-lnk:client>
+	 -->
+	 
+	 <!-- 
+	 <inf-lnk:server id="paymentServer" >
+		<inf-lnk:application app="biz-pay-bgw-payment-srv"/>
+		<inf-lnk:registry type="zk" address="10.100.156.26:2181"/>
+	</inf-lnk:server>
+	
+	<inf-lnk:client>
+		<inf-lnk:application app="biz-pay-bgw-payment-srv"/>
+		<inf-lnk:lookup type="zk" address="10.100.156.26:2181"/>
+		<inf-lnk:load-balance type="hash"/>
+	</inf-lnk:client>
+	  -->
+	
+</beans>
